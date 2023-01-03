@@ -1,10 +1,14 @@
 ---
-title: 'Tipologia y ciclo de vida de los datos: Heart Attack Analysis & Prediction dataset'
-author: "Autores : Soulaiman el Hamri y Eloy Pérez"
+title: 'Tipologia y ciclo de vida de los datos: Heart Attack Analysis & Prediction
+  dataset'
+author: 'Autores : Soulaiman el Hamri y Eloy Pérez'
 date: "Enero 2023"
-output: 
+output:
   pdf_document:
     toc: yes
+  html_document:
+    toc: yes
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +29,7 @@ El primer paso es cargar el dataset:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Cargamos el juego de datos heart.csv
-path = './heart.csv'
+path = '../dataset/heart.csv'
 heartAttackData <- read.csv(path)
 ```
 
@@ -61,7 +65,7 @@ A continuación se explica el significado de cada variable:
 +--------------+----------------------------------------------------------------------------------------------------------------------+
 | **trtbps**   | Presión arterial en reposo (en mm Hg)                                                                                |
 +--------------+----------------------------------------------------------------------------------------------------------------------+
-| **chol**     | Colestorol en mg/dl obtenido a través del sensor BMI                                                                 |
+| **chol**     | Colesterol en mg/dl obtenido a través del sensor BMI                                                                 |
 +--------------+----------------------------------------------------------------------------------------------------------------------+
 | **fbs**      | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 = verdadero; 0 = falso)                                                 |
 +--------------+----------------------------------------------------------------------------------------------------------------------+
@@ -83,7 +87,7 @@ A continuación se explica el significado de cada variable:
 +--------------+----------------------------------------------------------------------------------------------------------------------+
 | **caa**      | Número de vasos grandes (0-3)                                                                                        |
 +--------------+----------------------------------------------------------------------------------------------------------------------+
-| **thall**    | unknown                                                                                                              |
+| **thall**    | Desconocido                                                                                                          |
 +--------------+----------------------------------------------------------------------------------------------------------------------+
 | **output**   | Es el target.                                                                                                        |
 |              |                                                                                                                      |
@@ -98,7 +102,7 @@ Los hechos numéricos a estudiar serán los siguientes:
 
 # 3. Limpieza de los datos
 
-3.1. ¿Los datos contienen ceros o elementos vacíos? Gestiona cada uno de estos casos.
+## 3.1. ¿Los datos contienen ceros o elementos vacíos? Gestiona cada uno de estos casos.
 
 A continuación vamos a procesar los datos para elminar los que sean erróneaos o redundantes. También vamos a ver si podemos eliminar algunos atributos de los datos.
 
@@ -121,6 +125,8 @@ A continuación vamos a eliminar la variable thall, ya que se desconoce su signi
 #Eliminamos la columna thall
 heartAttackData$thall<- NULL
 ```
+
+## 3.2. Identifica y gestiona los valores extremos.
 
 A continuación vamos a identificar y gestionar los valores extremos. Para detectar dichos valores extremos o *outliers,* se va a obtener los rangos de los valores maximos y minimos de cada variable y a continuación se va a representar los datos mediante graficos de cajas (*boxplots*).
 
@@ -149,7 +155,20 @@ range(heartAttackData$output)
 
 La edad comprendida de los pacientes esta entre 29 y 77. Por lo tanto, no hay valores extremos.
 
-Comprovando el rango vemos que la mayoria de los valores son variables categoricas: sex, cp, fbs,restecg, exng, slp, caa y output. Se ha comprovado que cada valor numérico de las anteriores variables tiene un significado categórico.
+Comprobando el rango vemos que la mayoría de los valores son variables categoricas: sex, cp, fbs,restecg, exng, slp, caa y output.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+unique(heartAttackData$sex)
+unique(heartAttackData$cp)
+unique(heartAttackData$fbs)
+unique(heartAttackData$restecg)
+unique(heartAttackData$exng)
+unique(heartAttackData$slp)
+unique(heartAttackData$caa)
+unique(heartAttackData$output)
+```
+
+Se ha comprobado que cada valor numérico de las anteriores variables tiene un significado categórico.
 
 Ahora nos falta por ver si hay valores extremos en trtbps, chol, thalachh y oldpeak. En caso que hayan, se ha decidido eliminar las observaciones de dichos valores extremos.
 
@@ -187,13 +206,34 @@ g_caja<-boxplot(heartAttackData$oldpeak, col="#0c4c8a", frame.plot=F,horizontal 
 heartAttackData<-heartAttackData[!(heartAttackData$oldpeak %in% g_caja$out),]
 ```
 
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#oldpeak
+g_caja<-boxplot(heartAttackData$oldpeak, col="#0c4c8a", frame.plot=F,horizontal = TRUE)
+
+#Eliminamos outliers:
+heartAttackData<-heartAttackData[!(heartAttackData$oldpeak %in% g_caja$out),]
+```
+
+Tras eliminar los outliers comprobamos con cúantas observaciones nos quedamos:
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+dim(heartAttackData)
+```
+
+Se puede comprobar que se han perdido 19 filas de datos, es decir, alrededor del 6%, lo que no supone un problema.
+
+*TODO: Guardar dataset*
+
 # 4. Análisis de los datos
 
-4.1. Selección de los grupos de datos que se quieren analizar/comparar (p. ej., si se van a comparar grupos de datos, ¿cuáles son estos grupos y qué tipo de análisis se van a aplicar?)
+## 4.1. Selección de los grupos de datos que se quieren analizar/comparar (p. ej., si se van a comparar grupos de datos, ¿cuáles son estos grupos y qué tipo de análisis se van a aplicar?)
 
-4.2. Comprobación de la normalidad y homogeneidad de la varianza.
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+dim(heartAttackData)
+```
 
-4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc.
+## 4.2. Comprobación de la normalidad y homogeneidad de la varianza.
+
+## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc.
 
 Aplicar al menos tres métodos de análisis diferentes.
 
