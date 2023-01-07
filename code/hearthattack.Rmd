@@ -215,6 +215,7 @@ heartAttackData<-heartAttackData[!(heartAttackData$oldpeak %in% g_caja$out),]
 ```
 
 Tras eliminar los outliers comprobamos con cúantas observaciones nos quedamos:
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 dim(heartAttackData)
 ```
@@ -227,15 +228,282 @@ Se puede comprobar que se han perdido 19 filas de datos, es decir, alrededor del
 
 ## 4.1. Selección de los grupos de datos que se quieren analizar/comparar (p. ej., si se van a comparar grupos de datos, ¿cuáles son estos grupos y qué tipo de análisis se van a aplicar?)
 
+Para los análisis se separaran los datos en dos grupos, en función del sexo. 
+Para cada grupo observaremos los valores de colesterol y frecuencia cardíaca 
+máxima y compararemos las medias, para ver si existen diferencias entre las 
+poblaciones.
+
+Por otro lado intentaremos probar la relación entre colesterol y frecuencia 
+cardíaca mediante una regresión lineal.
+
+Para empezar crearemos una etiqueta categórica para cada sexo, que es útil para 
+ciertos tipos de test y representaciones visuales:
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-dim(heartAttackData)
+heartAttackData$sex_name[heartAttackData$sex == 0] = "sex0"
+heartAttackData$sex_name[heartAttackData$sex == 1] = "sex1"
+```
+
+Seguidamente separamos el dataset en dos en función del sexo:
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+sex0Data = heartAttackData[heartAttackData$sex == 0,]
+sex1Data = heartAttackData[heartAttackData$sex == 1,]
 ```
 
 ## 4.2. Comprobación de la normalidad y homogeneidad de la varianza.
 
-## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc.
+### 4.2.1. Normalidad y homoscedasticidad en colesterol
 
-Aplicar al menos tres métodos de análisis diferentes.
+Vamos a representar en primer lugar la distribución del colesterol para cada 
+sexo:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(sex0Data, aes(x=chol)) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth=22, colour="black", fill="white") + 
+  geom_density(alpha=.2, fill="#FF6666") +
+  ggtitle("Distribución colesterol sexo 0")
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(sex1Data, aes(x=chol)) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth=22, colour="black", fill="white") + 
+  geom_density(alpha=.2, fill="#FF6666") +
+  ggtitle("Distribución colesterol sexo 1")
+```
+Observamos que en ambos casos parece seguirse una distribución similar a la 
+normal. Procedemos a aplicar la prueba de Shapiro-Wilk para comprobar si 
+efectivamente estamos ante una distribución que podemos considerar normal.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+shapiro.test(sex0Data$chol)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+shapiro.test(sex1Data$chol)
+```
+
+Con un p-valor superior a 0.5 en ambos casos, no rechazamos la hipótesis nula y 
+aceptamos que la distribución del colesterol es normal para ambos sexos.
+
+Debido a que los grupos siguen una distribución normal respecto de las medidas 
+de colesterol, aplicamos el test de Levene para comprobar si podemos considerar 
+que tienen varianzas similares:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(car)
+leveneTest(chol ~ sex_name, data = heartAttackData)
+```
+
+Comprobamos que el p-valor de la prueba de Levene es de 0.1, por lo que no se 
+rechaza la hipótesis nula y se considera que las muestras tienen varianzas 
+similares.
+
+### 4.2.2. Normalidad y homoscedasticidad en frecuencia cardíaca
+
+Vamos ahora con los datos de frecuencia cardíaca, los graficamos de similar 
+manera que el colesterol:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(sex0Data, aes(x=thalachh)) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth=11, colour="black", fill="white") + 
+  geom_density(alpha=.2, fill="#FF6666") +
+  ggtitle("Distribución frecuencia cardíaca sexo 0")
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+ggplot(sex1Data, aes(x=thalachh)) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth=11, colour="black", fill="white") + 
+  geom_density(alpha=.2, fill="#FF6666") +
+  ggtitle("Distribución frecuencia cardíaca sexo 1")
+```
+
+Apreciamos en ambos casos que una cola es sensiblemente más alargada que la 
+otra, por lo que es posible que no nos encontremos ante una distribución normal.
+Aplicamos la prueba de Shapiro-Wilk para comprobarlo:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+shapiro.test(sex0Data$thalachh)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+shapiro.test(sex1Data$thalachh)
+```
+
+Con un contundente p-valor cercano al cero, rechazamos la hipótesis nula y 
+entendemos que las distribuciones no siguen un patrón normal.
+
+Los test de Shapiro nos indica que no se sigue una distribución normal en 
+ninguno de los grupos para la frecuencia cardíaca, por lo que aplicamos el test no 
+paramétrico de Fligner-Killeen para conocer si las varianzas de los grupos son 
+similares:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+fligner.test(thalachh ~ sex_name, data = heartAttackData)
+```
+
+Con un p-valor de 0.09 no rechazamos la hipótesis nula y consideramos que los 
+grupos tienen varianzas similares.
+
+## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
+
+### 4.3.1. Comparación de medias de colesterol por sexo
+
+En primer lugar, aplicaremos un análisis estadístico descriptivo para conocer 
+cada uno de los grupos. En primer lugar vamos a ver en que rangos se
+distribuyen los datos.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(sex0Data$chol)
+cat("Var: ", var(sex0Data$chol), "\n")
+cat("Sd: ", sd(sex0Data$chol))
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(sex1Data$chol)
+cat("Var: ", var(sex1Data$chol), "\n")
+cat("Sd: ", sd(sex1Data$chol))
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(heartAttackData, aes(x = sex_name, y = chol)) +
+  geom_boxplot() +
+  stat_summary(fun.y=mean, geom="point", color="red", fill="red")
+```
+Apreciamos que para el sexo 0 tenemos tanto una media como una mediana 
+superior a la del sexo 1, además de un rango intercuartílico mais amplio.
+
+Vamos a hacer una visualización para ver que podemos extraer de la 
+distribución y de la media:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+sex_means <- data.frame (
+  sex_name = c("sex0", "sex1"),
+  chol = c(
+    mean(heartAttackData$chol[heartAttackData$sex_name == "sex0"]), 
+    mean(heartAttackData$chol[heartAttackData$sex_name == "sex1"])
+  )
+)
+
+
+ggplot(heartAttackData, aes(x=chol, fill=sex_name)) +
+  geom_histogram(binwidth=22, alpha=.5, position="identity") +
+  geom_vline(
+    data=sex_means, aes(xintercept=chol,  colour=sex_name), 
+    linetype="dashed", linewidth=1
+  ) +
+  ggtitle("Distribución y media por sexo")
+```
+
+Vemos que la media de colesterol parece ser superior para las personas del 
+sexo 0. Lo comprobamos aplicando la prueba de t de Student:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+t.test(chol ~ sex_name, data = heartAttackData, alternative="greater")
+```
+
+Observamos que tenemos un p-valor menor que 0.05, por lo que rechazamos la 
+hipótesis nula y podemos afirmar con un 95% de confianza que el colesterol es 
+superior en personas del sexo 0.
+
+### 4.3.2. Comparación de medias de frecuencia cardíaca por sexo
+
+Vamos a examinar ahora los datos para la frecuencia cardíaca.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(sex0Data$thalachh)
+cat("Var: ", var(sex0Data$thalachh), "\n")
+cat("Sd: ", sd(sex0Data$thalachh))
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(sex1Data$thalachh)
+cat("Var: ", var(sex1Data$thalachh), "\n")
+cat("Sd: ", sd(sex1Data$thalachh))
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(heartAttackData, aes(x = sex_name, y = thalachh)) +
+  geom_boxplot() +
+  stat_summary(fun.y=mean, geom="point", color="red", fill="red")
+```
+En este caso, podemos ver que la mediana del sexo 0 es superior y el rango 
+intercuartílico es más estrecho. También se aprecia visualmente que la media 
+del sexo 0 es superior, pero por muy poco.
+
+Vamos a ver la media sobre la distribución:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+sex_means <- data.frame (
+  sex_name = c("sex0", "sex1"),
+  thalachh = c(
+    mean(heartAttackData$thalachh[heartAttackData$sex_name == "sex0"]), 
+    mean(heartAttackData$thalachh[heartAttackData$sex_name == "sex1"])
+  )
+)
+
+
+ggplot(heartAttackData, aes(x=thalachh, fill=sex_name)) +
+  geom_histogram(binwidth=11, alpha=.5, position="identity") +
+  geom_vline(
+    data=sex_means, aes(xintercept=thalachh,  colour=sex_name), 
+    linetype="dashed", linewidth=1
+  ) +
+  ggtitle("Distribución y media por sexo")
+```
+Como comentábamos antes, se aprecia que las medias de frecuencia cardíaca son bastante similares, siendo la del sexo 0 solo ligeramente superior.
+
+Vamos a aplicar la prueba de Mann-Whitney (ya que no tenemos distribuciones 
+normales) para ver si podemos considerar que la media de las poblaciones es distinta:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+wilcox.test(thalachh ~ sex_name, data = heartAttackData, alternative="two.sided")
+```
+Con un p-valor de 0.49 no podemos rechazar la hipótesis nula, por lo que 
+consideramos que la media de la frencuencia cardíaca máxima de las poblaciones 
+de ambos sexos es similar.
+
+### 4.3.3. Correlación entre colesterol y frecuencia cardíaca
+
+Por último vamos a examinar si existe alguna relación entre el nivel de 
+colesterol y la frecuencia cardíaca máxima alcanzada. Para ello emplearemos 
+una regresión lineal.
+
+Graficaremos en primer lugar la regresión, a ver que se puede observar.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(heartAttackData,aes(trtbps, chol)) +
+  geom_point() +
+  geom_smooth(method='lm')
+```
+De un simple vistazo ya nos es sencillo percibir que no parece que el colesterol
+este relacionado del forma alguna con la frecuencia cardíaca.
+
+Vamos a examinar los valores obtenidos de la regresión con más detalle:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+lm(trtbps ~ chol, data = heartAttackData)
+```
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(lm(trtbps ~ chol, data = heartAttackData))
+```
+
+
+
+Podemos apreciar que el coeficiente de correlación es prácticamente 0, indicando
+que el colesterol y la frecuencia cardíaca no se encuentran para nada 
+relacionados. Si observamos el coeficiente de determinación, vemos que del 
+mismo modo el colesterol no explica la varianza de la frecuencia cardíaca. 
+
+Podemos concluir por tanto que el colesterol y la frecuencia cardíaca no están 
+relacionados de una forma lineal.
+
+# Conclusiones
 
 # 5. Representación de los resultados a partir de tablas y gráficas
 
