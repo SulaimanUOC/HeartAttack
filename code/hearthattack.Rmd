@@ -1,7 +1,7 @@
 ---
 title: 'Tipologia y ciclo de vida de los datos: Heart Attack Analysis & Prediction
   dataset'
-author: 'Autores : Soulaiman el Hamri y Eloy Pérez'
+author: 'Autores : Soulaiman el Hamri y Eloy Pérez González'
 date: "Enero 2023"
 output:
   pdf_document:
@@ -9,6 +9,9 @@ output:
   html_document:
     toc: yes
     df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -17,23 +20,33 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 1. Descripción del dataset
 
-El dataset elejido es: <https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset>.
+¿Por qué es importante y qué pregunta/problema pretende responder?
 
-Es un juego de datos contiene la información de diferentes parámetros que se miden al realizar un análisis cardíaco. Los datos se han obtenido de personas de diferentes edades y sexo. La pregunta que pretende responder es la de si es possible predecir un ataque cardíaco, y así poder actuar a tiempo.
+El dataset elejido es:
+<https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset>.
+
+Es un juego de datos que contiene la información de diferentes
+parámetros que se han medido al realizar un análisis cardíaco. Estos
+datos se han obtenido de personas de diferente rango de edades y sexo.
+Lasn preguntas que se pretenden responder son: ¿Quién sufre más de
+colesterol hombres o mujeres? ¿Cómo afecta el aumento de los niveles del
+colesterol a la frecuencía cardíaca?
 
 # 2. Integración y selección de los datos de interés a analizar
 
-En este apartado vamos a explorar el conjunto de datos con el que vamos a trabajar y seleccionar los datos que nos serán útiles para estudiar.
+En este apartado vamos a explorar el conjunto de datos con el que vamos
+a trabajar y seleccionar los datos que nos serán útiles para estudiar.
 
-El primer paso es cargar el dataset:
+El primer paso es cargar el dataset con los datos originales:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-# Cargamos el juego de datos heart.csv
-path = '../dataset/heart.csv'
+# Cargamos el juego de datos heart_in.csv
+path = '../data/heart_in.csv'
 heartAttackData <- read.csv(path)
 ```
 
-A continuació verificamos la estructura del juego de datos. Vemos el número de columnas que tenemos y ejemplos del contenido de las filas.
+A continuació verificamos la estructura del juego de datos. Vemos el
+número de columnas que tenemos y ejemplos del contenido de las filas.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -42,220 +55,210 @@ str(heartAttackData)
 head(heartAttackData)
 ```
 
-Podemos ver en el data frame que tenemos 303 observaciones y un total de 14 variables. Por cada variable podemos ver su tipo y a continuación un pequeño subconjunto de datos como ejemplo. Hemos podido comprobar que las variables contenidas en el fichero y sus tipos se corresponden a las que se han cargado.
+Podemos ver en el data frame que tenemos 303 observaciones y un total de
+14 variables. Por cada variable podemos ver su tipo y a continuación un
+pequeño subconjunto de datos como ejemplo. Hemos podido comprobar que
+las variables contenidas en el fichero y sus tipos se corresponden a las
+que se han cargado.
 
 A continuación se explica el significado de cada variable:
 
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **Variable** | Descripción                                                                                                          |
-+==============+======================================================================================================================+
-| **age**      | Edad del paciente.                                                                                                   |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **sex**      | Sexo del paciente.                                                                                                   |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **cp**       | Tipo de dolor en el pecho.                                                                                           |
-|              |                                                                                                                      |
-|              | -   Valor 1: angina típica.                                                                                          |
-|              |                                                                                                                      |
-|              | -   Valor 2: angina atípica.                                                                                         |
-|              |                                                                                                                      |
-|              | -   Valor 3: dolor no anginoso.                                                                                      |
-|              |                                                                                                                      |
-|              | -   Valor 4: asintomático.                                                                                           |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **trtbps**   | Presión arterial en reposo (en mm Hg)                                                                                |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **chol**     | Colesterol en mg/dl obtenido a través del sensor BMI                                                                 |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **fbs**      | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 = verdadero; 0 = falso)                                                 |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **restecg**  | Resultados electrocardiográficos en reposo.                                                                          |
-|              |                                                                                                                      |
-|              | -   Valor 0: normal.                                                                                                 |
-|              |                                                                                                                      |
-|              | -   Valor 1: tener anomalías en la onda ST-T (inversiones de la onda T y/o elevación o depresión del ST \> 0,05 mV). |
-|              |                                                                                                                      |
-|              | -   Valor 2: mostrar hipertrofia ventricular izquierda probable o definitiva según los criterios de Estes.           |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **thalachh** | Frecuencia cardíaca máxima alcanzada.                                                                                |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **exng**     | Angina inducida por el ejercicio (1 = sí; 0 = no)                                                                    |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **oldpeak**  | Pico anterior                                                                                                        |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **slp**      | Pendiente                                                                                                            |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **caa**      | Número de vasos grandes (0-3)                                                                                        |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **thall**    | Desconocido                                                                                                          |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
-| **output**   | Es el target.                                                                                                        |
-|              |                                                                                                                      |
-|              | -   0= menos posibilidades de ataque al corazón                                                                      |
-|              |                                                                                                                      |
-|              | -   1= más posibilidades de ataque al corazón                                                                        |
-+--------------+----------------------------------------------------------------------------------------------------------------------+
++------------+---------------------------------------------------------+
+| **         | Descripción                                             |
+| Variable** |                                                         |
++============+=========================================================+
+| **age**    | Edad del paciente.                                      |
++------------+---------------------------------------------------------+
+| **sex**    | Sexo del paciente.                                      |
+|            |                                                         |
+|            | -   Valor 0: Hombre.                                    |
+|            |                                                         |
+|            | -   Valor 1: Mujer.                                     |
++------------+---------------------------------------------------------+
+| **cp**     | Tipo de dolor en el pecho.                              |
+|            |                                                         |
+|            | -   Valor 1: angina típica.                             |
+|            |                                                         |
+|            | -   Valor 2: angina atípica.                            |
+|            |                                                         |
+|            | -   Valor 3: dolor no anginoso.                         |
+|            |                                                         |
+|            | -   Valor 4: asintomático.                              |
++------------+---------------------------------------------------------+
+| **trtbps** | Presión arterial en reposo (en mm Hg).                  |
++------------+---------------------------------------------------------+
+| **chol**   | Colesterol en mg/dl obtenido a través del sensor BMI.   |
++------------+---------------------------------------------------------+
+| **fbs**    | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 =          |
+|            | verdadero; 0 = falso).                                  |
++------------+---------------------------------------------------------+
+| *          | Resultados electrocardiográficos en reposo.             |
+| *restecg** |                                                         |
+|            | -   Valor 0: normal.                                    |
+|            |                                                         |
+|            | -   Valor 1: tener anomalías en la onda ST-T            |
+|            |     (inversiones de la onda T y/o elevación o depresión |
+|            |     del ST \> 0,05 mV).                                 |
+|            |                                                         |
+|            | -   Valor 2: mostrar hipertrofia ventricular izquierda  |
+|            |     probable o definitiva según los criterios de Estes. |
++------------+---------------------------------------------------------+
+| **         | Frecuencia cardíaca máxima alcanzada.                   |
+| thalachh** |                                                         |
++------------+---------------------------------------------------------+
+| **exng**   | Angina inducida por el ejercicio (1 = sí; 0 = no).      |
++------------+---------------------------------------------------------+
+| *          | Pico anterior.                                          |
+| *oldpeak** |                                                         |
++------------+---------------------------------------------------------+
+| **slp**    | Pendiente.                                              |
++------------+---------------------------------------------------------+
+| **caa**    | Número de vasos grandes (0-3).                          |
++------------+---------------------------------------------------------+
+| **thall**  | Desconocido.                                            |
++------------+---------------------------------------------------------+
+| **output** | Es el target.                                           |
+|            |                                                         |
+|            | -   0= menos posibilidades de ataque al corazón.        |
+|            |                                                         |
+|            | -   1= más posibilidades de ataque al corazón.          |
++------------+---------------------------------------------------------+
 
-Los hechos numéricos a estudiar serán los siguientes:
+Los hechos numéricos que se quieren estudiar serán los siguientes:
 
--   age, sex, cp, trtbps, chol, fbs, restecg, exng y output.
+-   sex, chol y thalachh.
+
+Vamos a realizar la subselección de los datos a estudiar:
+
+```{r}
+# Seleccionamos las variables sex, chol y thalachh
+myvars <- c("sex", "chol", "thalachh")
+subHeartAttackData <- heartAttackData[myvars]
+
+```
 
 # 3. Limpieza de los datos
 
 ## 3.1. ¿Los datos contienen ceros o elementos vacíos? Gestiona cada uno de estos casos.
 
-A continuación vamos a procesar los datos para elminar los que sean erróneaos o redundantes. También vamos a ver si podemos eliminar algunos atributos de los datos.
+A continuación vamos a procesar los datos para elminar los que sean
+erróneaos o redundantes. También vamos a ver si podemos eliminar algunos
+atributos de los datos.
 
 Primeramente, vamos a ver si hay valores vacíos o nulos:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Buscamos campos nulos y vacíos 
 print("Valores nulos:")
-colSums(is.na(heartAttackData))
+colSums(is.na(subHeartAttackData))
 print("Campos vacíos:")
-colSums(heartAttackData == "")
+colSums(subHeartAttackData == "")
 ```
 
-Podemos ver que el dataset no contiene ningún campo nulo o vacío.
-
-A continuación vamos a eliminar la variable thall, ya que se desconoce su significado y no va a ser relevante en el estudio que vamos a realizar.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-
-#Eliminamos la columna thall
-heartAttackData$thall<- NULL
-```
+Podemos ver que el subdataset no contiene ningún campo nulo o vacío.
 
 ## 3.2. Identifica y gestiona los valores extremos.
 
-A continuación vamos a identificar y gestionar los valores extremos. Para detectar dichos valores extremos o *outliers,* se va a obtener los rangos de los valores maximos y minimos de cada variable y a continuación se va a representar los datos mediante graficos de cajas (*boxplots*).
+A continuación vamos a identificar y gestionar los valores extremos.
+Para detectar dichos valores extremos o *outliers,* se va a obtener los
+rangos de los valores maximos y minimos de cada variable y a
+continuación se va a representar los datos mediante graficos de cajas
+(*boxplots*).
 
-Primero empezamos mirando el rango de valores maximos y minimos de cada variable:
+Primero empezamos mirando el rango de valores maximos y minimos de cada
+variable:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 library(ggplot2)
 
-range(heartAttackData$age)
-range(heartAttackData$sex)
-range(heartAttackData$cp)
-range(heartAttackData$trtbps)
-range(heartAttackData$chol)
-range(heartAttackData$fbs)
-range(heartAttackData$restecg)
-range(heartAttackData$thalachh)
-range(heartAttackData$exng)
-range(heartAttackData$oldpeak)
-range(heartAttackData$slp)
-range(heartAttackData$caa)
-range(heartAttackData$output)
-
+range(subHeartAttackData$sex)
+range(subHeartAttackData$chol)
+range(subHeartAttackData$thalachh)
 
 ```
 
-La edad comprendida de los pacientes esta entre 29 y 77. Por lo tanto, no hay valores extremos.
-
-Comprobando el rango vemos que la mayoría de los valores son variables categoricas: sex, cp, fbs,restecg, exng, slp, caa y output.
+Sabemos que sex es una variable categórica, vamos a ver si sus valores
+numéricos tiene un significado categórico definido.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-unique(heartAttackData$sex)
-unique(heartAttackData$cp)
-unique(heartAttackData$fbs)
-unique(heartAttackData$restecg)
-unique(heartAttackData$exng)
-unique(heartAttackData$slp)
-unique(heartAttackData$caa)
-unique(heartAttackData$output)
+unique(subHeartAttackData$sex)
+
 ```
 
-Se ha comprobado que cada valor numérico de las anteriores variables tiene un significado categórico.
-
-Ahora nos falta por ver si hay valores extremos en trtbps, chol, thalachh y oldpeak. En caso que hayan, se ha decidido eliminar las observaciones de dichos valores extremos.
-
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-#trtbps
-g_caja<-boxplot(heartAttackData$trtbps, col="#0c4c8a", frame.plot=F, horizontal = TRUE)
-
-#Eliminamos outliers:
-heartAttackData<-heartAttackData[!(heartAttackData$trtbps %in% g_caja$out),]
-```
+Ahora nos falta por ver si hay valores extremos en chol y thalachh. En
+caso que hayan, se ha decidido eliminar las observaciones de dichos
+valores extremos.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 #chol
-g_caja<-boxplot(heartAttackData$chol, col="#0c4c8a", frame.plot=F, horizontal = TRUE)
+g_caja<-boxplot(subHeartAttackData$chol, col="#0c4c8a", frame.plot=F, horizontal = TRUE)
 
 #Eliminamos outliers:
-heartAttackData<-heartAttackData[!(heartAttackData$chol %in% g_caja$out),]
+subHeartAttackData<-subHeartAttackData[!(subHeartAttackData$chol %in% g_caja$out),]
 
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 #thalachh
-g_caja<-boxplot(heartAttackData$thalachh, col="#0c4c8a", frame.plot=F, horizontal = TRUE)
+g_caja<-boxplot(subHeartAttackData$thalachh, col="#0c4c8a", frame.plot=F, horizontal = TRUE)
 
 #Eliminamos outliers:
-heartAttackData<-heartAttackData[!(heartAttackData$thalachh %in% g_caja$out),]
+subHeartAttackData<-subHeartAttackData[!(subHeartAttackData$thalachh %in% g_caja$out),]
 
 ```
+
+Tras eliminar los outliers comprobamos con cúantas observaciones nos
+quedamos:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-#oldpeak
-g_caja<-boxplot(heartAttackData$oldpeak, col="#0c4c8a", frame.plot=F,horizontal = TRUE)
-
-#Eliminamos outliers:
-heartAttackData<-heartAttackData[!(heartAttackData$oldpeak %in% g_caja$out),]
+dim(subHeartAttackData)
 ```
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-#oldpeak
-g_caja<-boxplot(heartAttackData$oldpeak, col="#0c4c8a", frame.plot=F,horizontal = TRUE)
+Se puede comprobar que se han perdido 6 filas de datos, es decir,
+alrededor del 1,9%, lo que no supone un problema.
 
-#Eliminamos outliers:
-heartAttackData<-heartAttackData[!(heartAttackData$oldpeak %in% g_caja$out),]
+Por último, vamos a extraer el datset con los datos finales que se van a
+analizar.
+
+```{r}
+write.csv(subHeartAttackData, "../data/heart_out.csv")
 ```
-
-Tras eliminar los outliers comprobamos con cúantas observaciones nos quedamos:
-
-```{r echo=TRUE, message=FALSE, warning=FALSE}
-dim(heartAttackData)
-```
-
-Se puede comprobar que se han perdido 19 filas de datos, es decir, alrededor del 6%, lo que no supone un problema.
-
-*TODO: Guardar dataset*
 
 # 4. Análisis de los datos
 
 ## 4.1. Selección de los grupos de datos que se quieren analizar/comparar (p. ej., si se van a comparar grupos de datos, ¿cuáles son estos grupos y qué tipo de análisis se van a aplicar?)
 
-Para los análisis se separaran los datos en dos grupos, en función del sexo. 
-Para cada grupo observaremos los valores de colesterol y frecuencia cardíaca 
-máxima y compararemos las medias, para ver si existen diferencias entre las 
-poblaciones.
+Para los análisis se separaran los datos en dos grupos, en función del
+sexo. Para cada grupo observaremos los valores de colesterol y
+frecuencia cardíaca máxima y compararemos las medias, para ver si
+existen diferencias entre las poblaciones.
 
-Por otro lado intentaremos probar la relación entre colesterol y frecuencia 
-cardíaca mediante una regresión lineal.
+Por otro lado intentaremos probar la relación entre colesterol y
+frecuencia cardíaca mediante una regresión lineal.
 
-Para empezar crearemos una etiqueta categórica para cada sexo, que es útil para 
-ciertos tipos de test y representaciones visuales:
+Para empezar crearemos una etiqueta categórica para cada sexo, que es
+útil para ciertos tipos de test y representaciones visuales:
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-heartAttackData$sex_name[heartAttackData$sex == 0] = "sex0"
-heartAttackData$sex_name[heartAttackData$sex == 1] = "sex1"
+subHeartAttackData$sex_name[subHeartAttackData$sex == 0] = "sex0"
+subHeartAttackData$sex_name[subHeartAttackData$sex == 1] = "sex1"
 ```
 
 Seguidamente separamos el dataset en dos en función del sexo:
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-sex0Data = heartAttackData[heartAttackData$sex == 0,]
-sex1Data = heartAttackData[heartAttackData$sex == 1,]
+sex0Data = subHeartAttackData[subHeartAttackData$sex == 0,]
+sex1Data = subHeartAttackData[subHeartAttackData$sex == 1,]
 ```
 
 ## 4.2. Comprobación de la normalidad y homogeneidad de la varianza.
 
 ### 4.2.1. Normalidad y homoscedasticidad en colesterol
 
-Vamos a representar en primer lugar la distribución del colesterol para cada 
-sexo:
+Vamos a representar en primer lugar la distribución del colesterol para
+cada sexo:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -265,7 +268,6 @@ ggplot(sex0Data, aes(x=chol)) +
   ggtitle("Distribución colesterol sexo 0")
 ```
 
-
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 ggplot(sex1Data, aes(x=chol)) + 
@@ -273,9 +275,11 @@ ggplot(sex1Data, aes(x=chol)) +
   geom_density(alpha=.2, fill="#FF6666") +
   ggtitle("Distribución colesterol sexo 1")
 ```
-Observamos que en ambos casos parece seguirse una distribución similar a la 
-normal. Procedemos a aplicar la prueba de Shapiro-Wilk para comprobar si 
-efectivamente estamos ante una distribución que podemos considerar normal.
+
+Observamos que en ambos casos parece seguirse una distribución similar a
+la normal. Procedemos a aplicar la prueba de Shapiro-Wilk para comprobar
+si efectivamente estamos ante una distribución que podemos considerar
+normal.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 shapiro.test(sex0Data$chol)
@@ -285,26 +289,27 @@ shapiro.test(sex0Data$chol)
 shapiro.test(sex1Data$chol)
 ```
 
-Con un p-valor superior a 0.5 en ambos casos, no rechazamos la hipótesis nula y 
-aceptamos que la distribución del colesterol es normal para ambos sexos.
+Con un p-valor superior a 0.5 en ambos casos, no rechazamos la hipótesis
+nula y aceptamos que la distribución del colesterol es normal para ambos
+sexos.
 
-Debido a que los grupos siguen una distribución normal respecto de las medidas 
-de colesterol, aplicamos el test de Levene para comprobar si podemos considerar 
-que tienen varianzas similares:
+Debido a que los grupos siguen una distribución normal respecto de las
+medidas de colesterol, aplicamos el test de Levene para comprobar si
+podemos considerar que tienen varianzas similares:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(car)
-leveneTest(chol ~ sex_name, data = heartAttackData)
+leveneTest(chol ~ sex_name, data = subHeartAttackData)
 ```
 
-Comprobamos que el p-valor de la prueba de Levene es de 0.1, por lo que no se 
-rechaza la hipótesis nula y se considera que las muestras tienen varianzas 
-similares.
+Comprobamos que el p-valor de la prueba de Levene es de 0.1, por lo que
+no se rechaza la hipótesis nula y se considera que las muestras tienen
+varianzas similares.
 
 ### 4.2.2. Normalidad y homoscedasticidad en frecuencia cardíaca
 
-Vamos ahora con los datos de frecuencia cardíaca, los graficamos de similar 
-manera que el colesterol:
+Vamos ahora con los datos de frecuencia cardíaca, los graficamos de
+similar manera que el colesterol:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 
@@ -322,9 +327,10 @@ ggplot(sex1Data, aes(x=thalachh)) +
   ggtitle("Distribución frecuencia cardíaca sexo 1")
 ```
 
-Apreciamos en ambos casos que una cola es sensiblemente más alargada que la 
-otra, por lo que es posible que no nos encontremos ante una distribución normal.
-Aplicamos la prueba de Shapiro-Wilk para comprobarlo:
+Apreciamos en ambos casos que una cola es sensiblemente más alargada que
+la otra, por lo que es posible que no nos encontremos ante una
+distribución normal. Aplicamos la prueba de Shapiro-Wilk para
+comprobarlo:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 shapiro.test(sex0Data$thalachh)
@@ -334,28 +340,28 @@ shapiro.test(sex0Data$thalachh)
 shapiro.test(sex1Data$thalachh)
 ```
 
-Con un contundente p-valor cercano al cero, rechazamos la hipótesis nula y 
-entendemos que las distribuciones no siguen un patrón normal.
+Con un contundente p-valor cercano al cero, rechazamos la hipótesis nula
+y entendemos que las distribuciones no siguen un patrón normal.
 
-Los test de Shapiro nos indica que no se sigue una distribución normal en 
-ninguno de los grupos para la frecuencia cardíaca, por lo que aplicamos el test no 
-paramétrico de Fligner-Killeen para conocer si las varianzas de los grupos son 
-similares:
+Los test de Shapiro nos indica que no se sigue una distribución normal
+en ninguno de los grupos para la frecuencia cardíaca, por lo que
+aplicamos el test no paramétrico de Fligner-Killeen para conocer si las
+varianzas de los grupos son similares:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-fligner.test(thalachh ~ sex_name, data = heartAttackData)
+fligner.test(thalachh ~ sex_name, data = subHeartAttackData)
 ```
 
-Con un p-valor de 0.09 no rechazamos la hipótesis nula y consideramos que los 
-grupos tienen varianzas similares.
+Con un p-valor de 0.09 no rechazamos la hipótesis nula y consideramos
+que los grupos tienen varianzas similares.
 
 ## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
 
 ### 4.3.1. Comparación de medias de colesterol por sexo
 
-En primer lugar, aplicaremos un análisis estadístico descriptivo para conocer 
-cada uno de los grupos. En primer lugar vamos a ver en que rangos se
-distribuyen los datos.
+En primer lugar, aplicaremos un análisis estadístico descriptivo para
+conocer cada uno de los grupos. En primer lugar vamos a ver en que
+rangos se distribuyen los datos.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 summary(sex0Data$chol)
@@ -370,27 +376,29 @@ cat("Sd: ", sd(sex1Data$chol))
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-ggplot(heartAttackData, aes(x = sex_name, y = chol)) +
+ggplot(subHeartAttackData, aes(x = sex_name, y = chol)) +
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", color="red", fill="red")
 ```
-Apreciamos que para el sexo 0 tenemos tanto una media como una mediana 
-superior a la del sexo 1, además de un rango intercuartílico mais amplio.
 
-Vamos a hacer una visualización para ver que podemos extraer de la 
+Apreciamos que para el sexo 0 tenemos tanto una media como una mediana
+superior a la del sexo 1, además de un rango intercuartílico mais
+amplio.
+
+Vamos a hacer una visualización para ver que podemos extraer de la
 distribución y de la media:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 sex_means <- data.frame (
   sex_name = c("sex0", "sex1"),
   chol = c(
-    mean(heartAttackData$chol[heartAttackData$sex_name == "sex0"]), 
-    mean(heartAttackData$chol[heartAttackData$sex_name == "sex1"])
+    mean(subHeartAttackData$chol[subHeartAttackData$sex_name == "sex0"]), 
+    mean(subHeartAttackData$chol[subHeartAttackData$sex_name == "sex1"])
   )
 )
 
 
-ggplot(heartAttackData, aes(x=chol, fill=sex_name)) +
+ggplot(subHeartAttackData, aes(x=chol, fill=sex_name)) +
   geom_histogram(binwidth=22, alpha=.5, position="identity") +
   geom_vline(
     data=sex_means, aes(xintercept=chol,  colour=sex_name), 
@@ -399,16 +407,16 @@ ggplot(heartAttackData, aes(x=chol, fill=sex_name)) +
   ggtitle("Distribución y media por sexo")
 ```
 
-Vemos que la media de colesterol parece ser superior para las personas del 
-sexo 0. Lo comprobamos aplicando la prueba de t de Student:
+Vemos que la media de colesterol parece ser superior para las personas
+del sexo 0. Lo comprobamos aplicando la prueba de t de Student:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-t.test(chol ~ sex_name, data = heartAttackData, alternative="greater")
+t.test(chol ~ sex_name, data = subHeartAttackData, alternative="greater")
 ```
 
-Observamos que tenemos un p-valor menor que 0.05, por lo que rechazamos la 
-hipótesis nula y podemos afirmar con un 95% de confianza que el colesterol es 
-superior en personas del sexo 0.
+Observamos que tenemos un p-valor menor que 0.05, por lo que rechazamos
+la hipótesis nula y podemos afirmar con un 95% de confianza que el
+colesterol es superior en personas del sexo 0.
 
 ### 4.3.2. Comparación de medias de frecuencia cardíaca por sexo
 
@@ -427,13 +435,14 @@ cat("Sd: ", sd(sex1Data$thalachh))
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-ggplot(heartAttackData, aes(x = sex_name, y = thalachh)) +
+ggplot(subHeartAttackData, aes(x = sex_name, y = thalachh)) +
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", color="red", fill="red")
 ```
-En este caso, podemos ver que la mediana del sexo 0 es superior y el rango 
-intercuartílico es más estrecho. También se aprecia visualmente que la media 
-del sexo 0 es superior, pero por muy poco.
+
+En este caso, podemos ver que la mediana del sexo 0 es superior y el
+rango intercuartílico es más estrecho. También se aprecia visualmente
+que la media del sexo 0 es superior, pero por muy poco.
 
 Vamos a ver la media sobre la distribución:
 
@@ -441,13 +450,13 @@ Vamos a ver la media sobre la distribución:
 sex_means <- data.frame (
   sex_name = c("sex0", "sex1"),
   thalachh = c(
-    mean(heartAttackData$thalachh[heartAttackData$sex_name == "sex0"]), 
-    mean(heartAttackData$thalachh[heartAttackData$sex_name == "sex1"])
+    mean(subHeartAttackData$thalachh[subHeartAttackData$sex_name == "sex0"]), 
+    mean(subHeartAttackData$thalachh[subHeartAttackData$sex_name == "sex1"])
   )
 )
 
 
-ggplot(heartAttackData, aes(x=thalachh, fill=sex_name)) +
+ggplot(subHeartAttackData, aes(x=thalachh, fill=sex_name)) +
   geom_histogram(binwidth=11, alpha=.5, position="identity") +
   geom_vline(
     data=sex_means, aes(xintercept=thalachh,  colour=sex_name), 
@@ -455,68 +464,89 @@ ggplot(heartAttackData, aes(x=thalachh, fill=sex_name)) +
   ) +
   ggtitle("Distribución y media por sexo")
 ```
-Como comentábamos antes, se aprecia que las medias de frecuencia cardíaca son bastante similares, siendo la del sexo 0 solo ligeramente superior.
 
-Vamos a aplicar la prueba de Mann-Whitney (ya que no tenemos distribuciones 
-normales) para ver si podemos considerar que la media de las poblaciones es distinta:
+Como comentábamos antes, se aprecia que las medias de frecuencia
+cardíaca son bastante similares, siendo la del sexo 0 solo ligeramente
+superior.
+
+Vamos a aplicar la prueba de Mann-Whitney (ya que no tenemos
+distribuciones normales) para ver si podemos considerar que la media de
+las poblaciones es distinta:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-wilcox.test(thalachh ~ sex_name, data = heartAttackData, alternative="two.sided")
+wilcox.test(thalachh ~ sex_name, data = subHeartAttackData, alternative="two.sided")
 ```
-Con un p-valor de 0.49 no podemos rechazar la hipótesis nula, por lo que 
-consideramos que la media de la frencuencia cardíaca máxima de las poblaciones 
-de ambos sexos es similar.
+
+Con un p-valor de 0.49 no podemos rechazar la hipótesis nula, por lo que
+consideramos que la media de la frencuencia cardíaca máxima de las
+poblaciones de ambos sexos es similar.
 
 ### 4.3.3. Correlación entre colesterol y frecuencia cardíaca
 
-Por último vamos a examinar si existe alguna relación entre el nivel de 
-colesterol y la frecuencia cardíaca máxima alcanzada. Para ello emplearemos 
-una regresión lineal.
+Por último vamos a examinar si existe alguna relación entre el nivel de
+colesterol y la frecuencia cardíaca máxima alcanzada. Para ello
+emplearemos una regresión lineal.
 
 Graficaremos en primer lugar la regresión, a ver que se puede observar.
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-ggplot(heartAttackData,aes(trtbps, chol)) +
+ggplot(subHeartAttackData,aes(thalachh, chol)) +
   geom_point() +
   geom_smooth(method='lm')
 ```
-De un simple vistazo ya nos es sencillo percibir que no parece que el colesterol
-este relacionado del forma alguna con la frecuencia cardíaca.
+
+De un simple vistazo ya nos es sencillo percibir que no parece que el
+colesterol este relacionado del forma alguna con la frecuencia cardíaca.
 
 Vamos a examinar los valores obtenidos de la regresión con más detalle:
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-lm(trtbps ~ chol, data = heartAttackData)
+lm(thalachh ~ chol, data = subHeartAttackData)
 ```
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-summary(lm(trtbps ~ chol, data = heartAttackData))
+summary(lm(thalachh ~ chol, data = subHeartAttackData))
 ```
 
+Podemos apreciar que el coeficiente de correlación es prácticamente 0,
+indicando que el colesterol y la frecuencia cardíaca no se encuentran
+para nada relacionados. Si observamos el coeficiente de determinación,
+vemos que del mismo modo el colesterol no explica la varianza de la
+frecuencia cardíaca.
 
-
-Podemos apreciar que el coeficiente de correlación es prácticamente 0, indicando
-que el colesterol y la frecuencia cardíaca no se encuentran para nada 
-relacionados. Si observamos el coeficiente de determinación, vemos que del 
-mismo modo el colesterol no explica la varianza de la frecuencia cardíaca. 
-
-Podemos concluir por tanto que el colesterol y la frecuencia cardíaca no están 
-relacionados de una forma lineal.
-
-# Conclusiones
+Podemos concluir por tanto que el colesterol y la frecuencia cardíaca no
+están relacionados de una forma lineal.
 
 # 5. Representación de los resultados a partir de tablas y gráficas
 
-Este apartado se puede responder a lo largo de la práctica, sin necesidad de concentrar todas las representaciones en este punto de la práctica.
+Se ha respondido a lo largo de la práctica.
 
 # 6. Resolución del problema
 
-A partir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los resultados permiten responder al problema?
+A partir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los
+resultados permiten responder al problema?
 
 # 7. Código
 
-Hay que adjuntar el código, preferiblemente en R, con el que se ha realizado la limpieza, análisis y representación de los datos. Si lo preferís, también podéis trabajar en Python.
+El código de la práctica es en R y se puede encontrar en el fichero
+hearthattack.Rmd del siguiente enlace a Github:
+<https://github.com/SulaimanUOC/HeartAttack/tree/main/code>
 
-# 8. Vídeo
+# 8. Vídeo 
 
-Realizar un breve vídeo explicativo de la práctica (máximo 10 minutos), donde ambos integrantes del equipo expliquen con sus propias palabras el desarrollo de la práctica, basándose en las preguntas del enunciado para justificar y explicar el código desarrollado. Este vídeo se deberá entregar a través de un enlace al Google Drive de la UOC ([https://drive.google.com/...),](https://drive.google.com/…),) junto con enlace al repositorio Git entregado.
+Realizar un breve vídeo explicativo de la práctica (máximo 10 minutos),
+donde ambos integrantes del equipo expliquen con sus propias palabras el
+desarrollo de la práctica, basándose en las preguntas del enunciado para
+justificar y explicar el código desarrollado. Este vídeo se deberá
+entregar a través de un enlace al Google Drive de la UOC
+([https://drive.google.com/...),](https://drive.google.com/…),) junto
+con enlace al repositorio Git entregado.
+
+# 9. Contribuciones
+
+| Contribuciones              | Firma            |
+|-----------------------------|------------------|
+| Investigación previa        | Eloy y Soulaiman |
+| Redacción de las respuestas | Eloy y Soulaiman |
+| Desarrollo del código       | Eloy y Soulaiman |
+| Participación en el vídeo   | Eloy y Soulaiman |
