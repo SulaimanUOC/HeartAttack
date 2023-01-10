@@ -18,19 +18,21 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+\pagebreak
+
 # 1. Descripción del dataset
 
-¿Por qué es importante y qué pregunta/problema pretende responder?
-
 El dataset elejido es:
+
 <https://www.kaggle.com/datasets/rashikrahmanpritom/heart-attack-analysis-prediction-dataset>.
 
 Es un juego de datos que contiene la información de diferentes
 parámetros que se han medido al realizar un análisis cardíaco. Estos
 datos se han obtenido de personas de diferente rango de edades y sexo.
-Lasn preguntas que se pretenden responder son: ¿Quién sufre más de
+
+Las preguntas que se pretenden responder son: ¿Quién sufre más de
 colesterol hombres o mujeres? ¿Cómo afecta el aumento de los niveles del
-colesterol a la frecuencía cardíaca?
+colesterol a la frecuencia cardíaca?
 
 # 2. Integración y selección de los datos de interés a analizar
 
@@ -63,66 +65,65 @@ que se han cargado.
 
 A continuación se explica el significado de cada variable:
 
-+------------+---------------------------------------------------------+
-| **         | Descripción                                             |
-| Variable** |                                                         |
-+============+=========================================================+
-| **age**    | Edad del paciente.                                      |
-+------------+---------------------------------------------------------+
-| **sex**    | Sexo del paciente.                                      |
-|            |                                                         |
-|            | -   Valor 0: Hombre.                                    |
-|            |                                                         |
-|            | -   Valor 1: Mujer.                                     |
-+------------+---------------------------------------------------------+
-| **cp**     | Tipo de dolor en el pecho.                              |
-|            |                                                         |
-|            | -   Valor 1: angina típica.                             |
-|            |                                                         |
-|            | -   Valor 2: angina atípica.                            |
-|            |                                                         |
-|            | -   Valor 3: dolor no anginoso.                         |
-|            |                                                         |
-|            | -   Valor 4: asintomático.                              |
-+------------+---------------------------------------------------------+
-| **trtbps** | Presión arterial en reposo (en mm Hg).                  |
-+------------+---------------------------------------------------------+
-| **chol**   | Colesterol en mg/dl obtenido a través del sensor BMI.   |
-+------------+---------------------------------------------------------+
-| **fbs**    | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 =          |
-|            | verdadero; 0 = falso).                                  |
-+------------+---------------------------------------------------------+
-| *          | Resultados electrocardiográficos en reposo.             |
-| *restecg** |                                                         |
-|            | -   Valor 0: normal.                                    |
-|            |                                                         |
-|            | -   Valor 1: tener anomalías en la onda ST-T            |
-|            |     (inversiones de la onda T y/o elevación o depresión |
-|            |     del ST \> 0,05 mV).                                 |
-|            |                                                         |
-|            | -   Valor 2: mostrar hipertrofia ventricular izquierda  |
-|            |     probable o definitiva según los criterios de Estes. |
-+------------+---------------------------------------------------------+
-| **         | Frecuencia cardíaca máxima alcanzada.                   |
-| thalachh** |                                                         |
-+------------+---------------------------------------------------------+
-| **exng**   | Angina inducida por el ejercicio (1 = sí; 0 = no).      |
-+------------+---------------------------------------------------------+
-| *          | Pico anterior.                                          |
-| *oldpeak** |                                                         |
-+------------+---------------------------------------------------------+
-| **slp**    | Pendiente.                                              |
-+------------+---------------------------------------------------------+
-| **caa**    | Número de vasos grandes (0-3).                          |
-+------------+---------------------------------------------------------+
-| **thall**  | Desconocido.                                            |
-+------------+---------------------------------------------------------+
-| **output** | Es el target.                                           |
-|            |                                                         |
-|            | -   0= menos posibilidades de ataque al corazón.        |
-|            |                                                         |
-|            | -   1= más posibilidades de ataque al corazón.          |
-+------------+---------------------------------------------------------+
++---------------+----------------------------------------------------+
+| **Variable**  | Descripción                                        |
++===============+====================================================+
+| **age**       | Edad del paciente.                                 |
++---------------+----------------------------------------------------+
+| **sex**       | Sexo del paciente.                                 |
+|               |                                                    |
+|               | -   Valor 0: Hombre.                               |
+|               |                                                    |
+|               | -   Valor 1: Mujer.                                |
++---------------+----------------------------------------------------+
+| **cp**        | Tipo de dolor en el pecho.                         |
+|               |                                                    |
+|               | -   Valor 1: angina típica.                        |
+|               |                                                    |
+|               | -   Valor 2: angina atípica.                       |
+|               |                                                    |
+|               | -   Valor 3: dolor no anginoso.                    |
+|               |                                                    |
+|               | -   Valor 4: asintomático.                         |
++---------------+----------------------------------------------------+
+| **trtbps**    | Presión arterial en reposo (en mm Hg).             |
++---------------+----------------------------------------------------+
+| **chol**      | Colesterol en mg/dl obtenido a través del sensor   |
+|               | BMI.                                               |
++---------------+----------------------------------------------------+
+| **fbs**       | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 =     |
+|               | verdadero; 0 = falso).                             |
++---------------+----------------------------------------------------+
+| **restecg**   | Resultados electrocardiográficos en reposo.        |
+|               |                                                    |
+|               | -   Valor 0: normal.                               |
+|               |                                                    |
+|               | -   Valor 1: tener anomalías en la onda ST-T       |
+|               |     (inversiones de la onda T y/o elevación o      |
+|               |     depresión del ST \> 0,05 mV).                  |
+|               |                                                    |
+|               | -   Valor 2: mostrar hipertrofia ventricular       |
+|               |     izquierda probable o definitiva según los      |
+|               |     criterios de Estes.                            |
++---------------+----------------------------------------------------+
+| **thalachh**  | Frecuencia cardíaca máxima alcanzada.              |
++---------------+----------------------------------------------------+
+| **exng**      | Angina inducida por el ejercicio (1 = sí; 0 = no). |
++---------------+----------------------------------------------------+
+| **oldpeak**   | Pico anterior.                                     |
++---------------+----------------------------------------------------+
+| **slp**       | Pendiente.                                         |
++---------------+----------------------------------------------------+
+| **caa**       | Número de vasos grandes (0-3).                     |
++---------------+----------------------------------------------------+
+| **thall**     | Desconocido.                                       |
++---------------+----------------------------------------------------+
+| **output**    | Es el target.                                      |
+|               |                                                    |
+|               | -   0= menos posibilidades de ataque al corazón.   |
+|               |                                                    |
+|               | -   1= más posibilidades de ataque al corazón.     |
++---------------+----------------------------------------------------+
 
 Los hechos numéricos que se quieren estudiar serán los siguientes:
 
@@ -227,7 +228,7 @@ write.csv(subHeartAttackData, "../data/heart_out.csv")
 
 # 4. Análisis de los datos
 
-## 4.1. Selección de los grupos de datos que se quieren analizar/comparar (p. ej., si se van a comparar grupos de datos, ¿cuáles son estos grupos y qué tipo de análisis se van a aplicar?)
+## 4.1. Selección de los grupos de datos que se quieren analizar/comparar
 
 Para los análisis se separaran los datos en dos grupos, en función del
 sexo. Para cada grupo observaremos los valores de colesterol y
@@ -355,7 +356,7 @@ fligner.test(thalachh ~ sex_name, data = subHeartAttackData)
 Con un p-valor de 0.09 no rechazamos la hipótesis nula y consideramos
 que los grupos tienen varianzas similares.
 
-## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos. En función de los datos y el objetivo del estudio, aplicar pruebas de contraste de hipótesis, correlaciones, regresiones, etc. Aplicar al menos tres métodos de análisis diferentes.
+## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos
 
 ### 4.3.1. Comparación de medias de colesterol por sexo
 
@@ -382,8 +383,7 @@ ggplot(subHeartAttackData, aes(x = sex_name, y = chol)) +
 ```
 
 Apreciamos que para el sexo 0 tenemos tanto una media como una mediana
-superior a la del sexo 1, además de un rango intercuartílico mais
-amplio.
+superior a la del sexo 1, además de un rango intercuartílico mas amplio.
 
 Vamos a hacer una visualización para ver que podemos extraer de la
 distribución y de la media:
@@ -519,12 +519,27 @@ están relacionados de una forma lineal.
 
 # 5. Representación de los resultados a partir de tablas y gráficas
 
-Se ha respondido a lo largo de la práctica.
+Se han representado a lo largo de los apartados 3 y 4.
 
 # 6. Resolución del problema
 
-A partir de los resultados obtenidos, ¿cuáles son las conclusiones? ¿Los
-resultados permiten responder al problema?
+Los resultados que hemos podido obtener són:
+
+-   Entre hombres y mujeres las muestras del colesterol y frecuencia
+    cardíaca tienen una varianza similar.
+
+-   Los hombres (sexo 0) tienen el colesterol más alto que las mujeres
+    (sexo 1).
+
+-   Entre hombres y mujeres no se aprecia diferencias significativas en
+    la frecuencia cardíaca.
+
+-   No exisite relación lineal entre el colesterol y la frecuencia
+    cardíaca.
+
+A las preguntas pleantadas al inicio, se ha podido ver que los hombres
+sufren más de colesterol que las mujeres y que no hay una relación
+aparente entre el colesterol y la frecuencía cardíaca.
 
 # 7. Código
 
@@ -532,7 +547,7 @@ El código de la práctica es en R y se puede encontrar en el fichero
 hearthattack.Rmd del siguiente enlace a Github:
 <https://github.com/SulaimanUOC/HeartAttack/tree/main/code>
 
-# 8. Vídeo 
+# 8. Vídeo
 
 Realizar un breve vídeo explicativo de la práctica (máximo 10 minutos),
 donde ambos integrantes del equipo expliquen con sus propias palabras el
