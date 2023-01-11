@@ -307,8 +307,7 @@ library(car)
 leveneTest(chol ~ sex_name, data = subHeartAttackData)
 ```
 
-Comprobamos que el p-valor de la prueba de Levene es de 0.1, por lo que
-no se rechaza la hipótesis nula y se considera que las muestras tienen
+Comprobamos que el p-valor de la prueba de Levene es superior a 0.05, por lo que no se rechaza la hipótesis nula y se considera que las muestras tienen
 varianzas similares.
 
 ### 4.2.2. Normalidad y homoscedasticidad en frecuencia cardíaca
