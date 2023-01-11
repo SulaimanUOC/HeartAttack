@@ -479,9 +479,9 @@ las poblaciones es distinta:
 wilcox.test(thalachh ~ sex_name, data = subHeartAttackData, alternative="two.sided")
 ```
 
-Con un p-valor superior a 0.05 no podemos rechazar la hipótesis nula, por lo que
-consideramos que la media de la frencuencia cardíaca máxima de las
-poblaciones de ambos sexos es similar.
+Con un p-valor superior a 0.05 no podemos rechazar la hipótesis nula,
+por lo que consideramos que la media de la frencuencia cardíaca máxima
+de las poblaciones de ambos sexos es similar.
 
 ### 4.3.3. Correlación entre colesterol y frecuencia cardíaca
 
