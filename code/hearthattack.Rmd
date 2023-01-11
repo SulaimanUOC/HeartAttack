@@ -65,69 +65,67 @@ que se han cargado.
 
 A continuación se explica el significado de cada variable:
 
-+---------------+--------------------------------------------------+
-| **Variable**  | Descripción                                      |
-+===============+==================================================+
-| **age**       | Edad del paciente.                               |
-+---------------+--------------------------------------------------+
-| **sex**       | Sexo del paciente. En la web donde se ha         |
-|               | obtenido el dataset no se especifica el          |
-|               | significado de cada valor del sexo (hombre o     |
-|               | mujer)                                           |
-|               |                                                  |
-|               | -   Valor 0: Se desconce.                        |
-|               |                                                  |
-|               | -   Valor 1: Se desconoce.                       |
-+---------------+--------------------------------------------------+
-| **cp**        | Tipo de dolor en el pecho.                       |
-|               |                                                  |
-|               | -   Valor 1: angina típica.                      |
-|               |                                                  |
-|               | -   Valor 2: angina atípica.                     |
-|               |                                                  |
-|               | -   Valor 3: dolor no anginoso.                  |
-|               |                                                  |
-|               | -   Valor 4: asintomático.                       |
-+---------------+--------------------------------------------------+
-| **trtbps**    | Presión arterial en reposo (en mm Hg).           |
-+---------------+--------------------------------------------------+
-| **chol**      | Colesterol en mg/dl obtenido a través del sensor |
-|               | BMI.                                             |
-+---------------+--------------------------------------------------+
-| **fbs**       | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 =   |
-|               | verdadero; 0 = falso).                           |
-+---------------+--------------------------------------------------+
-| **restecg**   | Resultados electrocardiográficos en reposo.      |
-|               |                                                  |
-|               | -   Valor 0: normal.                             |
-|               |                                                  |
-|               | -   Valor 1: tener anomalías en la onda ST-T     |
-|               |     (inversiones de la onda T y/o elevación o    |
-|               |     depresión del ST \> 0,05 mV).                |
-|               |                                                  |
-|               | -   Valor 2: mostrar hipertrofia ventricular     |
-|               |     izquierda probable o definitiva según los    |
-|               |     criterios de Estes.                          |
-+---------------+--------------------------------------------------+
-| **thalachh**  | Frecuencia cardíaca máxima alcanzada.            |
-+---------------+--------------------------------------------------+
-| **exng**      | Angina inducida por el ejercicio (1 = sí; 0 =    |
-|               | no).                                             |
-+---------------+--------------------------------------------------+
-| **oldpeak**   | Pico anterior.                                   |
-+---------------+--------------------------------------------------+
-| **slp**       | Pendiente.                                       |
-+---------------+--------------------------------------------------+
-| **caa**       | Número de vasos grandes (0-3).                   |
-+---------------+--------------------------------------------------+
-| **thall**     | Desconocido.                                     |
-+---------------+--------------------------------------------------+
-| **output**    | Es el target.                                    |
-|               |                                                  |
-|               | -   0= menos posibilidades de ataque al corazón. |
-|               |                                                  |
-|               | -   1= más posibilidades de ataque al corazón.   |
-+---------------+--------------------------------------------------+
++--------------+------------------------------------------------------+
+| **Variable** | Descripción                                          |
++==============+======================================================+
+| **age**      | Edad del paciente.                                   |
++--------------+------------------------------------------------------+
+| **sex**      | Sexo del paciente. En la web donde se ha obtenido el |
+|              | dataset no se especifica el significado de cada      |
+|              | valor del sexo (hombre o mujer)                      |
+|              |                                                      |
+|              | -   Valor 0: Se desconce.                            |
+|              |                                                      |
+|              | -   Valor 1: Se desconoce.                           |
++--------------+------------------------------------------------------+
+| **cp**       | Tipo de dolor en el pecho.                           |
+|              |                                                      |
+|              | -   Valor 1: angina típica.                          |
+|              |                                                      |
+|              | -   Valor 2: angina atípica.                         |
+|              |                                                      |
+|              | -   Valor 3: dolor no anginoso.                      |
+|              |                                                      |
+|              | -   Valor 4: asintomático.                           |
++--------------+------------------------------------------------------+
+| **trtbps**   | Presión arterial en reposo (en mm Hg).               |
++--------------+------------------------------------------------------+
+| **chol**     | Colesterol en mg/dl obtenido a través del sensor     |
+|              | BMI.                                                 |
++--------------+------------------------------------------------------+
+| **fbs**      | (Azúcar en sangre en ayunas \> 120 mg/dl) (1 =       |
+|              | verdadero; 0 = falso).                               |
++--------------+------------------------------------------------------+
+| **restecg**  | Resultados electrocardiográficos en reposo.          |
+|              |                                                      |
+|              | -   Valor 0: normal.                                 |
+|              |                                                      |
+|              | -   Valor 1: tener anomalías en la onda ST-T         |
+|              |     (inversiones de la onda T y/o elevación o        |
+|              |     depresión del ST \> 0,05 mV).                    |
+|              |                                                      |
+|              | -   Valor 2: mostrar hipertrofia ventricular         |
+|              |     izquierda probable o definitiva según los        |
+|              |     criterios de Estes.                              |
++--------------+------------------------------------------------------+
+| **thalachh** | Frecuencia cardíaca máxima alcanzada.                |
++--------------+------------------------------------------------------+
+| **exng**     | Angina inducida por el ejercicio (1 = sí; 0 = no).   |
++--------------+------------------------------------------------------+
+| **oldpeak**  | Pico anterior.                                       |
++--------------+------------------------------------------------------+
+| **slp**      | Pendiente.                                           |
++--------------+------------------------------------------------------+
+| **caa**      | Número de vasos grandes (0-3).                       |
++--------------+------------------------------------------------------+
+| **thall**    | Desconocido.                                         |
++--------------+------------------------------------------------------+
+| **output**   | Es el target.                                        |
+|              |                                                      |
+|              | -   0= menos posibilidades de ataque al corazón.     |
+|              |                                                      |
+|              | -   1= más posibilidades de ataque al corazón.       |
++--------------+------------------------------------------------------+
 
 Los hechos numéricos que se quieren estudiar serán los siguientes:
 
@@ -307,8 +305,9 @@ library(car)
 leveneTest(chol ~ sex_name, data = subHeartAttackData)
 ```
 
-Comprobamos que el p-valor de la prueba de Levene es superior a 0.05, por lo que no se rechaza la hipótesis nula y se considera que las muestras tienen
-varianzas similares.
+Comprobamos que el p-valor de la prueba de Levene es superior a 0.05,
+por lo que no se rechaza la hipótesis nula y se considera que las
+muestras tienen varianzas similares.
 
 ### 4.2.2. Normalidad y homoscedasticidad en frecuencia cardíaca
 
