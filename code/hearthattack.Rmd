@@ -30,9 +30,9 @@ Es un juego de datos que contiene la información de diferentes
 parámetros que se han medido al realizar un análisis cardíaco. Estos
 datos se han obtenido de personas de diferente rango de edades y sexo.
 
-Las preguntas que se pretenden responder son: ¿Quién sufre más de
-colesterol hombres o mujeres? ¿Cómo afecta el aumento de los niveles del
-colesterol a la frecuencia cardíaca?
+Las preguntas que se pretenden responder son: ¿Qué sexo tiene más de
+colesterol? ¿Cómo afecta el aumento de los niveles del colesterol a la
+frecuencia cardíaca?
 
 # 2. Integración y selección de los datos de interés a analizar
 
@@ -70,11 +70,13 @@ A continuación se explica el significado de cada variable:
 +===============+====================================================+
 | **age**       | Edad del paciente.                                 |
 +---------------+----------------------------------------------------+
-| **sex**       | Sexo del paciente.                                 |
+| **sex**       | Sexo del paciente. En la web donde se ha obtenido  |
+|               | el dataset no se especifica el significado de cada |
+|               | valor del sexo (hombre o mujer)                    |
 |               |                                                    |
-|               | -   Valor 0: Hombre.                               |
+|               | -   Valor 0: Se desconce.                          |
 |               |                                                    |
-|               | -   Valor 1: Mujer.                                |
+|               | -   Valor 1: Se desconoce.                         |
 +---------------+----------------------------------------------------+
 | **cp**        | Tipo de dolor en el pecho.                         |
 |               |                                                    |
@@ -525,14 +527,13 @@ Se han representado a lo largo de los apartados 3 y 4.
 
 Los resultados que hemos podido obtener són:
 
--   Entre hombres y mujeres las muestras del colesterol y frecuencia
+-   Entre sexo 0 y sexo 1 las muestras del colesterol y frecuencia
     cardíaca tienen una varianza similar.
 
--   Los hombres (sexo 0) tienen el colesterol más alto que las mujeres
-    (sexo 1).
+-   Los sexo 0 tienen el colesterol más alto que sexo 1.
 
--   Entre hombres y mujeres no se aprecia diferencias significativas en
-    la frecuencia cardíaca.
+-   Entre sexo 0 y sexo 1 no se aprecia diferencias significativas en la
+    frecuencia cardíaca.
 
 -   No exisite relación lineal entre el colesterol y la frecuencia
     cardíaca.
