@@ -355,7 +355,7 @@ varianzas de los grupos son similares:
 fligner.test(thalachh ~ sex_name, data = subHeartAttackData)
 ```
 
-Con un p-valor de 0.09 no rechazamos la hipótesis nula y consideramos
+Con un p-valor de 0.08 no rechazamos la hipótesis nula y consideramos
 que los grupos tienen varianzas similares.
 
 ## 4.3. Aplicación de pruebas estadísticas para comparar los grupos de datos
@@ -479,7 +479,7 @@ las poblaciones es distinta:
 wilcox.test(thalachh ~ sex_name, data = subHeartAttackData, alternative="two.sided")
 ```
 
-Con un p-valor de 0.49 no podemos rechazar la hipótesis nula, por lo que
+Con un p-valor superior a 0.05 no podemos rechazar la hipótesis nula, por lo que
 consideramos que la media de la frencuencia cardíaca máxima de las
 poblaciones de ambos sexos es similar.
 
