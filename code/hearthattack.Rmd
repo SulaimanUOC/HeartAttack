@@ -30,15 +30,11 @@ Es un juego de datos que contiene la información de diferentes
 parámetros que se han medido al realizar un análisis cardíaco. Estos
 datos se han obtenido de personas de diferente rango de edades y sexo.
 
-<<<<<<< HEAD
+
 Las preguntas que se pretenden responder son: ¿Qué sexo tiene más de
 colesterol? ¿Cómo afecta el aumento de los niveles del colesterol a la
 frecuencia cardíaca?
-=======
-Las preguntas que se pretenden responder son: ¿Quién sufre más de
-colesterol, hombres o mujeres? ¿Cómo afecta el aumento de los niveles del
-colesterol a la frecuencia cardíaca?
->>>>>>> ef661e97d1a8b7ebf38d6089d3e841ca32905c47
+
 
 # 2. Integración y selección de los datos de interés a analizar
 
