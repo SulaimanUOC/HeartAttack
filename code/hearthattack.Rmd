@@ -30,7 +30,7 @@ Es un juego de datos que contiene la información de diferentes
 parámetros que se han medido al realizar un análisis cardíaco. Estos
 datos se han obtenido de personas de diferente rango de edades y sexo.
 
-Las preguntas que se pretenden responder son: ¿Qué sexo tiene más de
+Las preguntas que se pretenden responder son: ¿Qué sexo tiene más
 colesterol? ¿Cómo afecta el aumento de los niveles del colesterol a la
 frecuencia cardíaca?
 
@@ -540,9 +540,9 @@ Los resultados que hemos podido obtener són:
 -   No exisite relación lineal entre el colesterol y la frecuencia
     cardíaca.
 
-A las preguntas pleantadas al inicio, se ha podido ver que los hombres
-sufren más de colesterol que las mujeres y que no hay una relación
-aparente entre el colesterol y la frecuencía cardíaca.
+A las preguntas pleantadas al inicio, se ha podido ver que las personas
+de sexo 0 sufren más de colesterol que las personas de sexo 1 y que no
+hay una relación aparente entre el colesterol y la frecuencía cardíaca.
 
 # 7. Código
 
